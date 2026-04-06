@@ -200,38 +200,6 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <div className="flex justify-between mb-6">
-          {steps.map((s, index) => (
-            <div
-              key={s.key}
-              className={`flex items-center ${
-                index <= currentStepIndex
-                  ? "text-[var(--primary)]"
-                  : "text-[var(--text-secondary)]"
-              }`}
-            >
-              <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                  index <= currentStepIndex
-                    ? "bg-[var(--primary)] text-white"
-                    : "bg-[var(--surface)] text-[var(--text-secondary)]"
-                }`}
-              >
-                {index + 1}
-              </div>
-              {index < steps.length - 1 && (
-                <div
-                  className={`w-8 h-0.5 mx-1 ${
-                    index < currentStepIndex
-                      ? "bg-[var(--primary)]"
-                      : "bg-[var(--surface)]"
-                  }`}
-                />
-              )}
-            </div>
-          ))}
-        </div>
-
         {error && (
           <div className="mb-4 p-3 bg-[var(--error)]/10 border border-[var(--error)]/20 rounded-lg text-sm text-[var(--error)]">
             {error}
@@ -242,7 +210,7 @@ export default function RegisterPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                Email *
+                {t("auth.email") || "Email"} *
               </label>
               <Input
                 type="email"
@@ -256,7 +224,7 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                Phone *
+                {t("auth.phone") || "Phone"} *
               </label>
               <div className="flex gap-2">
                 <select
@@ -286,7 +254,7 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
-                Verification Method *
+                {t("auth.verificationMethod") || "Verification Method"} *
               </label>
               <div className="flex gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -329,7 +297,7 @@ export default function RegisterPage() {
             </div>
 
             <Button onClick={handleContactSubmit} className="w-full">
-              Continue
+              {t("common.continue") || "Continue"}
             </Button>
           </div>
         )}
@@ -338,7 +306,7 @@ export default function RegisterPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                Password *
+                {t("auth.password") || "Password"} *
               </label>
               <Input
                 type="password"
@@ -352,7 +320,7 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                Confirm Password *
+                {t("auth.confirmPassword") || "Confirm Password"} *
               </label>
               <Input
                 type="password"
@@ -366,10 +334,10 @@ export default function RegisterPage() {
 
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setStep("contact")}>
-                Back
+                {t("common.back") || "Back"}
               </Button>
               <Button onClick={handlePasswordSubmit} className="flex-1">
-                Continue
+                {t("common.continue") || "Continue"}
               </Button>
             </div>
           </div>
@@ -379,20 +347,20 @@ export default function RegisterPage() {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                Full Name *
+                {t("auth.name") || "Full Name"} *
               </label>
               <Input
                 value={formData.name}
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                placeholder="Your full legal name"
+                placeholder={t("auth.name") || "Your full name"}
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                Date of Birth *
+                {t("auth.birthDate") || "Date of Birth"} *
               </label>
               <Input
                 type="date"
@@ -402,13 +370,13 @@ export default function RegisterPage() {
                 }
               />
               <p className="text-xs text-[var(--text-secondary)] mt-1">
-                You must be 18+ to use OrbiTalk
+                {t("auth.ageRequirement") || "You must be 18+ to use OrbiTalk"}
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                Country *
+                {t("auth.country") || "Country"} *
               </label>
               <select
                 value={formData.country}
@@ -427,14 +395,14 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                State
+                {t("auth.state") || "State"}
               </label>
               <Input
                 value={formData.state}
                 onChange={(e) =>
                   setFormData({ ...formData, state: e.target.value })
                 }
-                placeholder="Optional"
+                placeholder={t("common.optional") || "Optional"}
               />
             </div>
 
@@ -453,7 +421,7 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                Sex (Optional)
+                {t("auth.gender") || "Gender"} (Optional)
               </label>
               <select
                 value={formData.gender}
@@ -473,7 +441,7 @@ export default function RegisterPage() {
 
             <div>
               <label className="block text-sm font-medium text-[var(--text-primary)] mb-1">
-                Gender Identity (Optional)
+                {t("auth.genderIdentity") || "Gender Identity"} (Optional)
               </label>
               <select
                 value={formData.genderIdentity}
@@ -493,10 +461,10 @@ export default function RegisterPage() {
 
             <div className="flex gap-2">
               <Button variant="outline" onClick={() => setStep("password")}>
-                Back
+                {t("common.back") || "Back"}
               </Button>
               <Button onClick={handlePersonalSubmit} className="flex-1">
-                Continue
+                {t("common.continue") || "Continue"}
               </Button>
             </div>
           </div>
@@ -506,20 +474,19 @@ export default function RegisterPage() {
           <div className="space-y-4">
             <div className="bg-[var(--primary)]/10 rounded-lg p-4 mb-4">
               <h3 className="font-semibold text-[var(--text-primary)] mb-2">
-                Identity Verification
+                {t("auth.verificationRequired") || "Identity Verification"}
               </h3>
               <p className="text-sm text-[var(--text-secondary)]">
-                This helps keep OrbiTalk safe for everyone. Your documents are
-                encrypted and deleted after verification.
+                {t("auth.verificationDesc") || "This helps keep OrbiTalk safe for everyone."}
               </p>
             </div>
 
             <div className="border border-[var(--border)] rounded-lg p-4">
               <h4 className="font-medium text-[var(--text-primary)] mb-2">
-                Step 1: Selfie with Document
+                {t("auth.verifyButton") || "Step 1: Selfie with Document"}
               </h4>
               <p className="text-sm text-[var(--text-secondary)] mb-3">
-                Take a selfie holding your ID document next to your face
+                {t("auth.verificationDesc") || "Take a selfie holding your ID document next to your face"}
               </p>
               <label className="block">
                 <input
