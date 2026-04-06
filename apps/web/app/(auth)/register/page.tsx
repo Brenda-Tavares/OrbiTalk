@@ -233,11 +233,12 @@ export default function RegisterPage() {
                   onChange={(e) =>
                     setFormData({ ...formData, phoneCode: e.target.value })
                   }
-                  className="px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text-primary)]"
+                  className="px-3 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-[var(--text-primary)] font-medium"
+                  style={{ color: '#1a1a1a' }}
                 >
                   {COUNTRIES.map((c) => (
                     <option key={c.code} value={c.phoneCode}>
-                      {c.phoneCode}
+                      {c.phoneCode} - {c.name}
                     </option>
                   ))}
                 </select>
