@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useTheme } from "@/stores/theme";
+import { useI18n } from "@/components/providers/i18n-provider";
 
 type Step =
   | "contact"
@@ -41,6 +42,7 @@ const GENDER_IDENTITIES = [
 export default function RegisterPage() {
   const router = useRouter();
   const { theme } = useTheme();
+  const { t } = useI18n();
   const [step, setStep] = useState<Step>("contact");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -191,10 +193,10 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md p-6">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">
-            Create Account
+            {t("auth.registerTitle") || "Create Account"}
           </h1>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
-            Join OrbiTalk - Connect safely worldwide
+            {t("auth.registerSubtitle") || "Join OrbiTalk"}
           </p>
         </div>
 
