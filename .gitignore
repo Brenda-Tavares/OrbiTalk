@@ -1,0 +1,112 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Secrets and keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+credentials.json
+service-account.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Testing
+coverage/
+.nyc_output/
+
+# Turbo
+.turbo/
+
+# Prisma
+apps/api/prisma/*.db
+apps/api/prisma/*.db-journal
+apps/api/dist/
+
+# Build artifacts
+*.tgz
+
+# Temp files
+tmp/
+temp/
+*.tmp
+
+# Uploads (user content)
+uploads/
+storage/
+cdn/
+
+# Cache
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# Secrets backup
+*secret*
+*password*
+*credential*
+
+# Mobile builds
+*.apk
+*.aab
+*.ipa
+
+# Capacitor
+apps/web/android/
+apps/web/ios/
+
+# Vercel
+.vercel/
+
+# Cloudflare
+.wrangler/
+
+# Tencent
+.scf/
+
+# Database backups
+*.sql
+*.dump
+*.bak
+
+# Personal notes
+notes/
+todo/
+*.md
+
+# CI/CD (keep only workflow templates)
+!.github/workflows/*.yml
+!.github/workflows/*.yaml
+
+# Keep example env
+!.env.example

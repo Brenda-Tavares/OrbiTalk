@@ -1,0 +1,11 @@
+{
+  "extends": "./apps/web/tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./apps/web/*"],
+      "@orbitalk/shared/*": ["./packages/shared/src/*"]
+    }
+  },
+  "include": ["apps/*/src/**/*", "packages/*/src/**/*"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,693 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserVisibility {
+  FIRST_NAME
+  FULL_NAME
+}
+
+enum UserTheme {
+  DARK
+  LIGHT
+  MEDIUM
+}
+
+enum VerificationStatus {
+  PENDING
+  FACE_MATCH
+  DOCUMENT_VERIFIED
+  APPROVED
+  REJECTED
+}
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  BLOCKED
+}
+
+enum GenderType {
+  WOMAN
+  MAN
+  PREFER_NOT_TO_ANSWER
+}
+
+enum GameType {
+  TIC_TAC_TOE
+  HANGMAN
+  CHESS
+  CHECKERS
+  LUDO
+  PUZZLE
+  WORD_SEARCH
+  UNO
+  DOMINO
+  CONNECT_FOUR
+  CROSSWORD
+}
+
+enum GameStatus {
+  WAITING
+  IN_PROGRESS
+  FINISHED
+  ABANDONED
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  GIF
+  GAME_INVITE
+  CALL
+  ADULT_IMAGE
+  ADULT_VIDEO
+  ADULT_CONSENT_REQUEST
+}
+
+enum CallType {
+  AUDIO
+  VIDEO
+}
+
+enum CallStatus {
+  RINGING
+  ACTIVE
+  ENDED
+  MISSED
+  DECLINED
+}
+
+enum NotificationType {
+  FRIEND_REQUEST
+  FRIEND_ACCEPTED
+  MESSAGE
+  CALL
+  GAME_INVITE
+  GAME_MOVE
+  SYSTEM
+  ADULT_CONTENT_REQUEST
+  ADULT_CONTENT_APPROVED
+  ADULT_CONTENT_DECLINED
+  HARASSMENT_ALERT
+  SAFETY_WARNING
+  PERMANENT_BAN
+  SCAM_ALERT
+  POST_LIKE
+  POST_DISLIKE
+  POST_COMMENT
+  COMMENT_LIKE
+  COMMENT_DISLIKE
+}
+
+enum ChatType {
+  STANDARD
+  ADULT_ONLY
+}
+
+enum BanReason {
+  MINOR_DETECTED
+  HARASSMENT
+  SEXUAL_CONTENT_MINOR
+  PROFILE_FRAUD
+  VIOLENCE_THREATS
+  SPAM_ABUSE
+  SEXUAL_HARASSMENT
+  NON_CONSENSUAL_SHARING
+  SCAM_ATTEMPT
+  PREJUDICE
+}
+
+enum BlockReason {
+  HARASSMENT
+  INAPPROPRIATE_CONTENT
+  PERSONAL_REASON
+  OTHER
+}
+
+enum SubscriptionType {
+  FREE
+  TRANSLATION_UNLIMITED
+  MULTI_COUNTRY
+  PREMIUM
+}
+
+enum SubscriptionDuration {
+  MONTHLY
+  SEMESTRAL
+  PERMANENT
+}
+
+model User {
+  id                  String    @id @default(cuid())
+  email               String    @unique
+  phone               String?   @unique
+  phoneVerified       Boolean   @default(false)
+  passwordHash        String?
+  name                String
+  nickname            String    @unique
+  tag                 String
+  avatar              String?
+  description         String?   @db.Text
+  visibility          UserVisibility @default(FIRST_NAME)
+  birthDate           DateTime
+  
+  country             String
+  countryCode         String
+  state               String?
+  city                String?
+  showLocation        Boolean   @default(false)
+  
+  gender              GenderType
+  showGender          Boolean   @default(true)
+  
+  zodiacSign          String?
+  showZodiac          Boolean   @default(true)
+  mbti                String?
+  
+  education           Education[]
+  languages         UserLanguage[]
+  
+  pets                String[]
+  animalsILike        String[]
+  hobbies             String[]
+  hobbiesCustom       String[]
+  musicLikes         String[]
+  musicLikesCustom   String[]
+  musicDislikes      String[]
+  movieLikes         String[]
+  movieLikesCustom   String[]
+  movieDislikes      String[]
+  seriesLikes        String[]
+  seriesLikesCustom  String[]
+  seriesDislikes     String[]
+  
+  foodLikes           String[]
+  foodLikesCustom    String[]
+  foodDislikes       String[]
+  drinks              String[]
+  drinksCustom       String[]
+  desserts            String[]
+  dessertsCustom     String[]
+  
+  lifestyleChoices    LifestyleChoice[]
+  
+  socialLinks         Json?
+  
+  theme               UserTheme        @default(DARK)
+  interfaceLanguage   String           @default("en")
+  acceptsAdultContent Boolean          @default(false)
+  safetyMode          Boolean          @default(false)
+  
+  isVerified          Boolean          @default(false)
+  verificationStatus  VerificationStatus @default(PENDING)
+  verificationMethod  String?          @default("email")
+  
+  isBanned            Boolean          @default(false)
+  banReason           BanReason?
+  banExpiresAt        DateTime?
+  banPermanent        Boolean          @default(false)
+  twoFactorEnabled    Boolean          @default(false)
+  twoFactorSecret     String?
+  warningCount        Int              @default(0)
+  
+  blockedUsers        String[]
+  reportedHarassments Int              @default(0)
+  
+  termsAcceptedAt     DateTime?
+  privacyAcceptedAt   DateTime?
+  
+  dailyTranslations   Int              @default(100)
+  translationsResetAt DateTime         @default(now())
+  hasTranslationPremium Boolean        @default(false)
+  translationPremiumExpiresAt DateTime?
+  
+  subscription        SubscriptionType  @default(FREE)
+  subscriptionExpiresAt DateTime?
+  
+  // AI Language Learning
+  dailyAudioTranscriptions Int              @default(10)
+  audioTranscriptionsResetAt DateTime        @default(now())
+  aiWarningCount        Int              @default(0)
+  aiWarningResetAt     DateTime          @default(now())
+  
+  discoveryCountry    String?
+  discoveryCountries  String[]
+  discoveryAgeMin     Int              @default(18)
+  discoveryAgeMax     Int              @default(99)
+  discoveryGenders    GenderType[]
+  
+  friendsInitiated    FriendRequest[]  @relation("Initiator")
+  friendsReceived     FriendRequest[]  @relation("Receiver")
+  sentMessages        Message[]        @relation("Sender")
+  createdChats        Chat[]           @relation("ChatCreator")
+  chatParticipants    ChatParticipant[]
+  notifications       Notification[]
+  gamePlayers         GamePlayer[]
+  sessions            Session[]
+  sentReports         Report[]         @relation("Reporter")
+  receivedReports    Report[]        @relation("Reported")
+  moderations        Moderation[]    @relation("Moderator")
+  auditLogs          AuditLog[]
+  verificationCodes   VerificationCode[]
+  
+  posts               Post[]
+  comments            Comment[]
+  reactions           Reaction[]
+  
+  createdAt           DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  lastSeenAt         DateTime?
+  
+  @@index([email])
+  @@index([phone])
+  @@index([nickname, tag])
+  @@index([isBanned])
+  @@index([country])
+  @@index([gender])
+  @@map("users")
+}
+
+model Education {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  institution  String
+  degree       String
+  course       String?
+  startYear    Int
+  endYear      Int?
+  isCurrent    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  
+  @@map("education")
+}
+
+model LifestyleChoice {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  substance   String
+  frequency   String
+  description String?
+  createdAt   DateTime @default(now())
+  
+  @@unique([userId, substance])
+  @@map("lifestyle_choices")
+}
+
+model UserLanguage {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  language   String
+  level      String
+  type       String   @default("known") // "known" or "learning"
+  createdAt  DateTime @default(now())
+  
+  @@unique([userId, language, type])
+  @@map("user_languages")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token        String   @unique
+  deviceInfo   String?
+  ipAddress    String?
+  location     String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  expiresAt    DateTime
+  lastUsedAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@map("sessions")
+}
+
+model FriendRequest {
+  id         String            @id @default(cuid())
+  senderId   String
+  sender     User              @relation("Initiator", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User              @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  status     FriendRequestStatus @default(PENDING)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  
+  @@unique([senderId, receiverId])
+  @@index([receiverId])
+  @@map("friend_requests")
+}
+
+model Chat {
+  id          String    @id @default(cuid())
+  type        ChatType  @default(STANDARD)
+  name        String?
+  avatar      String?
+  creatorId   String?
+  creator     User?     @relation("ChatCreator", fields: [creatorId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  isAdultOnly Boolean   @default(false)
+  
+  participants   ChatParticipant[]
+  messages       Message[]
+  calls          Call[]
+  adultRequests  AdultContentRequest[]
+  
+  @@map("chats")
+}
+
+model ChatParticipant {
+  id        String   @id @default(cuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      String   @default("member")
+  isMuted   Boolean  @default(false)
+  joinedAt  DateTime @default(now())
+  
+  @@unique([chatId, userId])
+  @@map("chat_participants")
+}
+
+model Message {
+  id             String      @id @default(cuid())
+  chatId         String
+  chat           Chat        @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User        @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+  type           MessageType @default(TEXT)
+  content        String      @db.Text
+  mediaUrl       String?
+  mediaThumbnail String?
+  mediaExpiresAt DateTime?
+  replyToId      String?
+  replyTo        Message?    @relation("ReplyTo", fields: [replyToId], references: [id])
+  replies        Message[]   @relation("ReplyTo")
+  reactions      Json?
+  editedAt       DateTime?
+  deletedAt      DateTime?
+  isReported     Boolean     @default(false)
+  aiFlagged      Boolean     @default(false)
+  aiFlagReason   String?
+  translation     Json?
+  translationLang String?
+  translatedAt    DateTime?
+  createdAt      DateTime    @default(now())
+  
+  @@index([chatId, createdAt])
+  @@index([aiFlagged])
+  @@map("messages")
+}
+
+model TranslatedTerm {
+  id          String   @id @default(cuid())
+  word        String
+  language    String
+  explanation String   @db.Text
+  createdAt   DateTime @default(now())
+  
+  @@unique([word, language])
+  @@map("translated_terms")
+}
+
+model AdultContentRequest {
+  id          String   @id @default(cuid())
+  chatId      String
+  chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  requesterId String
+  contentType String   @default("pending")
+  status      String   @default("pending")
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([chatId, status])
+  @@index([requesterId])
+  @@map("adult_content_requests")
+}
+
+model Call {
+  id        String     @id @default(cuid())
+  chatId    String
+  chat      Chat       @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  initiatorId String
+  type      CallType
+  status    CallStatus @default(RINGING)
+  startedAt DateTime?
+  endedAt   DateTime?
+  duration  Int?
+  createdAt DateTime   @default(now())
+  
+  @@map("calls")
+}
+
+model Game {
+  id           String      @id @default(cuid())
+  type         GameType
+  status       GameStatus  @default(WAITING)
+  language     String?
+  state        Json
+  winnerId     String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  finishedAt   DateTime?
+  
+  players      GamePlayer[]
+  
+  @@index([type, status])
+  @@map("games")
+}
+
+model GamePlayer {
+  id        String    @id @default(cuid())
+  gameId    String
+  game      Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  isReady   Boolean   @default(false)
+  isWinner  Boolean   @default(false)
+  score     Int       @default(0)
+  finishedAt DateTime?
+  joinedAt  DateTime  @default(now())
+  
+  @@unique([gameId, userId])
+  @@map("game_players")
+}
+
+model GameMove {
+  id        String   @id @default(cuid())
+  gameId    String
+  userId    String
+  move      Json
+  timestamp DateTime @default(now())
+  
+  @@map("game_moves")
+}
+
+model GameRanking {
+  id        String   @id @default(cuid())
+  odUserId  String   @map("userId")
+  gameType  GameType
+  language  String?
+  wins      Int      @default(0)
+  losses    Int      @default(0)
+  draws     Int      @default(0)
+  score     Int      @default(0)
+  rank      Int?
+  updatedAt DateTime @updatedAt
+  
+  @@unique([odUserId, gameType, language])
+  @@map("game_rankings")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  body      String           @db.Text
+  data      Json?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+  
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  reporterId  String
+  reporter    User     @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  reportedId  String
+  reported    User     @relation("Reported", fields: [reportedId], references: [id], onDelete: Cascade)
+  reason      String
+  description String?  @db.Text
+  evidenceUrl String?
+  messageId   String?
+  chatId      String?
+  country     String
+  status      String   @default("pending")
+  aiAnalysis  Json?
+  legalStatus String?
+  createdAt   DateTime @default(now())
+  resolvedAt  DateTime?
+  
+  @@index([status])
+  @@index([reportedId])
+  @@map("reports")
+}
+
+model Moderation {
+  id           String   @id @default(cuid())
+  moderatorId  String
+  moderator    User     @relation("Moderator", fields: [moderatorId], references: [id])
+  action      String
+  targetUserId String?
+  reportId    String?
+  reason      String
+  details     Json?
+  createdAt   DateTime @default(now())
+  
+  @@map("moderations")
+}
+
+model VerificationCode {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code       String
+  type       String
+  expiresAt  DateTime
+  attempts   Int      @default(0)
+  verified   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  
+  @@index([userId])
+  @@index([code, type])
+  @@map("verification_codes")
+}
+
+model VerificationDocument {
+  id              String   @id @default(cuid())
+  userId          String
+  selfieUrl       String
+  documentUrl     String
+  faceMatchScore  Float?
+  isProcessed     Boolean   @default(false)
+  isDeleted       Boolean   @default(false)
+  createdAt       DateTime @default(now())
+  expiresAt       DateTime
+  
+  @@map("verification_documents")
+}
+
+model Subscription {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  type        SubscriptionType
+  duration    SubscriptionDuration
+  price       Float
+  currency    String   @default("USD")
+  paymentId   String?
+  status      String   @default("active")
+  startsAt    DateTime @default(now())
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  
+  @@map("subscriptions")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model Post {
+  id            String    @id @default(cuid())
+  authorId      String
+  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content       String    @db.Text
+  mediaUrls     String[]
+  likesCount    Int       @default(0)
+  dislikesCount Int       @default(0)
+  commentsCount Int       @default(0)
+  isDeleted     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  comments      Comment[]
+  reactions     Reaction[]
+  
+  @@index([authorId])
+  @@index([createdAt])
+  @@map("posts")
+}
+
+model Comment {
+  id            String    @id @default(cuid())
+  postId        String
+  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId      String
+  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content       String    @db.Text
+  likesCount    Int       @default(0)
+  dislikesCount Int       @default(0)
+  isDeleted     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  reactions     Reaction[]
+  
+  @@index([postId])
+  @@index([authorId])
+  @@map("comments")
+}
+
+model Reaction {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId      String?
+  post        Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  commentId   String?
+  comment     Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  type        ReactionType
+  createdAt   DateTime @default(now())
+  
+  @@unique([userId, postId])
+  @@unique([userId, commentId])
+  @@index([postId])
+  @@index([commentId])
+  @@map("reactions")
+}
+
+enum ReactionType {
+  LIKE
+  DISLIKE
+}
