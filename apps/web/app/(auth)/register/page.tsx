@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -733,10 +734,10 @@ export default function RegisterPage() {
         )}
 
         <p className="text-xs text-center text-[var(--text-secondary)] mt-6">
-          Already have an account?{" "}
-          <a href="/login" className="text-[var(--primary)] hover:underline">
-            Sign in
-          </a>
+          {t("auth.alreadyHaveAccount") || "Already have an account?"}{" "}
+          <Link href="/login" className="text-[var(--primary)] hover:underline">
+            {t("common.login") || "Sign in"}
+          </Link>
         </p>
       </Card>
     </div>
