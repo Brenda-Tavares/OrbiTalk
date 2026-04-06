@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/app.ts",
     "build": "tsc",
-    "start": "node dist/app.js",
+    "start": "tsx src/app.ts",
     "lint": "eslint src --ext .ts",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",
